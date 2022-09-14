@@ -7,6 +7,7 @@ function Detail() {
   const [movieData, setMovieData] = useState([]);
   const { id } = useParams();
   const getMovie = async () => {
+    console.log("getting movie data...");
     const json = await (
       await fetch(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
     ).json();
@@ -14,10 +15,23 @@ function Detail() {
     setMovieData(json.data.movie);
     console.log(json);
   };
+
+  const validateID = function () {
+    const parsedID = parseInt(id);
+    if (parsedID === 0 || isNaN(parsedID)) {
+      return false;
+    }
+
+    return true;
+  };
+
   useEffect(() => {
-    getMovie();
+    if (validateID()) {
+      getMovie();
+    }
   }, []);
-  if (movieData.id === 0) {
+
+  if (!validateID() || movieData.id === 0 || movieData.id === undefined) {
     return (
       <div>
         <h1>No data found. Please try again.</h1>{" "}
